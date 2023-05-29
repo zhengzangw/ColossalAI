@@ -99,6 +99,8 @@ def generate(args):
                 actor = AutoModelForCausalLM.from_pretrained(args.model_path, torch_dtype=torch.float16).to(torch.cuda.current_device())
             elif args.model_name.startswith("h2ogpt"):
                 actor = AutoModelForCausalLM.from_pretrained(args.model_path, torch_dtype=torch.float16).to(torch.cuda.current_device())
+            elif args.model_name.startswith("opt-bitsandbytes"):
+                actor = AutoModelForCausalLM.from_pretrained(args.model_path, device_map="auto", load_in_8bit=True).to(torch.cuda.current_device())
             elif args.model_name.startswith("opt"):
                 actor = AutoModelForCausalLM.from_pretrained(args.model_path, torch_dtype=torch.float16).to(torch.cuda.current_device())
 
@@ -216,7 +218,7 @@ def generate(args):
                                          top_p=0.92,
                                          top_k=0)
                 res = tokenizer.batch_decode(outputs, skip_special_tokens=True)
-            if args.model_name.startswith("opt"):
+            elif args.model_name.startswith("opt"):
                 available_tokens = 2048 - encoded_batch['input_ids'].size(1)
                 outputs = actor.generate(**encoded_batch, 
                                          max_new_tokens=512 if available_tokens>512 else available_tokens,
