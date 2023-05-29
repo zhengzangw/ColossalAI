@@ -154,7 +154,8 @@ def generate(args):
                 f"Limiting dataset to {args.max_datasets_size} examples.")
         questions = questions[rank:args.max_datasets_size:world_size]
     else:
-        questions=jload(args.dataset)[rank*75:rank*75+75]
+        # questions=jload(args.dataset)[rank*75:rank*75+75]
+        questions=jload(args.dataset)
 
     answers = copy.deepcopy(questions)
 
