@@ -99,9 +99,15 @@ def generate(args):
                 actor = AutoModelForCausalLM.from_pretrained(args.model_path, torch_dtype=torch.float16).to(torch.cuda.current_device())
             elif args.model_name.startswith("h2ogpt"):
                 actor = AutoModelForCausalLM.from_pretrained(args.model_path, torch_dtype=torch.float16).to(torch.cuda.current_device())
+            elif args.model_name.startswith("opt-smoothquant"):
+                print("smoothquant")
+                from smooth_quant_gen import GenInt8OPTForCausalLM
+                actor = GenInt8OPTForCausalLM.from_pretrained(args.model_path, torch_dtype=torch.float16, device_map='auto')
             elif args.model_name.startswith("opt-bitsandbytes"):
+                print("bitsandbytes")
                 actor = AutoModelForCausalLM.from_pretrained(args.model_path, device_map="auto", load_in_8bit=True)
             elif args.model_name.startswith("opt"):
+                print("opt")
                 actor = AutoModelForCausalLM.from_pretrained(args.model_path, torch_dtype=torch.float16).to(torch.cuda.current_device())
 
     if args.model == 'gpt2':
@@ -122,7 +128,7 @@ def generate(args):
         if args.model_name.startswith("dolly"):
             tokenizer = AutoTokenizer.from_pretrained(args.model_path, padding_side="left")
         elif args.model_name.startswith('opt'):
-            tokenizer = AutoTokenizer.from_pretrained(args.model_path, padding_side="left")
+            tokenizer = AutoTokenizer.from_pretrained("facebook/opt-2.7b", padding_side="left")
         elif args.model_name.startswith("chatglm"):
             tokenizer = AutoTokenizer.from_pretrained(args.model_path, trust_remote_code=True)
         elif args.model_name.startswith("mpt"):
