@@ -291,6 +291,8 @@ def gpt35_evaluate(
     prompt: Dict[str, Any],
     metrics: List[str],
     category: str,
+    save_path:str,
+    model_name_list:list
 ) -> List[Dict]:
     """
     Use GPT-3.5 to evaluate model answers and save evaluation results.
@@ -304,7 +306,12 @@ def gpt35_evaluate(
     Returns:
         Evaluations of the given answers.
     """
+    base_save_path = os.path.join(save_path, "gpt_evaluate", "gpt35_evaluate_results")
+    evaluation_results_save_path = os.path.join(base_save_path, "evaluation_results")
 
+    if os.path.exists(os.path.join(evaluation_results_save_path, model_name_list[0], f"{category}_evaluation_results.json")):
+        print(f"Already exists {model_name_list[0]}'s {category}'s evaluation results.")
+        return jload(os.path.join(evaluation_results_save_path, model_name_list[0], f"{category}_evaluation_results.json"))
     print(f"The number of instances of category {category}'s is {len(answers)}.")
 
     evaluations = []
@@ -396,7 +403,10 @@ def save_gpt35_evaluation_statistics(model_name: str, evaluations: List[Dict], s
         scores = {metric: [] for metric in metrics}
         for evaluation in data:
             for metric in metrics:
-                scores[metric].append(calculate_scores_form_logprobs(evaluation["evaluation"][metric]["logprobs"][0]))
+                if metric not in evaluation["evaluation"]:
+                    scores[metric].append(0)
+                else:
+                    scores[metric].append(calculate_scores_form_logprobs(evaluation["evaluation"][metric]["logprobs"][0]))
 
         statistics = {}
         for metric in metrics:

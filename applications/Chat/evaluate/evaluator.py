@@ -30,7 +30,7 @@ class Evaluator(object):
 
         self.battle_results = gpt_evaluate.battle(answers1, answers2, self.battle_prompt)
 
-    def evaluate(self, answers: List[Dict], targets: List[Dict]) -> None:
+    def evaluate(self, answers: List[Dict], targets: List[Dict], save_path, model_name_list) -> None:
         """
         A comprehensive evaluation of the answers from the model.
         The function evaluates the model's performance from different perspectives
@@ -84,7 +84,7 @@ class Evaluator(object):
                 prompt = self.gpt_evaluation_prompt["general"]
 
             self.gpt35_evaluation_results[category] = gpt_evaluate.gpt35_evaluate(answers_per_category[category],
-                                                                                  prompt, category_metrics, category)
+                                                                                  prompt, category_metrics, category, save_path, model_name_list)
 
     def save(self, path: str, model_name_list: List[str]) -> None:
         """
