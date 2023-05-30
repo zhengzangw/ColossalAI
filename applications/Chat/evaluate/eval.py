@@ -55,7 +55,7 @@ def main(args):
 
             assert len(targets) == len(answers), "The number of target answers and model answers should be equal!"
 
-            evaluator.evaluate(answers=answers, targets=targets, save_path=args.save_path, model=args.gpt_model, model_name_list=args.model_name_list)
+            evaluator.evaluate(answers=answers, targets=targets, save_path=args.save_path, model_name_list=args.model_name_list)
             evaluator.save(args.save_path, args.model_name_list)
         else:
             raise ValueError("Unsupported number of answer files and model names!")
